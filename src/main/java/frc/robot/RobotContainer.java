@@ -43,7 +43,7 @@ public class RobotContainer {
   }
 
   private Command moveArm(int angle) {
-    return new RunCommand(() -> m_arm.setAngle(angle));
+    return new RunCommand(() -> m_arm.setAngle(angle), m_arm);
   }
 
   public Command getAutonomousCommand() {
