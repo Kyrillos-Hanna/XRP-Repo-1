@@ -12,7 +12,7 @@ public class Arm extends SubsystemBase {
   XRPServo m_arm;
   /** Creates a new Arm. */
   public Arm(XRPServo arm) {
-    XRPServo m_arm = arm;
+    m_arm = arm;
     m_arm.setAngle(0);
   }
 
