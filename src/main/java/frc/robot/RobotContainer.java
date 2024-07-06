@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.TeleopArcadeDriveCmd;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -34,7 +35,7 @@ public class RobotContainer {
   m_XboxController.a().whileTrue(moveArm(45));
   m_XboxController.b().whileTrue(moveArm(90));
   m_XboxController.x().whileTrue(moveArm(135));
-  m_XboxController.y().whileTrue(moveArm(180));
+  m_XboxController.y().whileTrue(turnRobot(90));
   
   } 
 
@@ -44,6 +45,10 @@ public class RobotContainer {
 
   private Command moveArm(int angle) {
     return new RunCommand(() -> m_arm.setAngle(angle), m_arm);
+  }
+
+  private Command turnRobot(int angle) {
+    return new RunCommand(() -> m_drivetrain.goToSetpoint(angle), m_drivetrain);
   }
 
   public Command getAutonomousCommand() {
