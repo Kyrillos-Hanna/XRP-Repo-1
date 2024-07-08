@@ -28,27 +28,17 @@ public class RobotContainer {
 
   private void configureBindings() {
    // m_drivetrain.setDefaultCommand(m_TeleopArcadeDriveCmd); 
-
-  //  m_drivetrain.setDefaultCommand(getArcadeDriveCommand());
-  m_drivetrain.setDefaultCommand(new RunCommand(() -> { m_drivetrain.arcadeDrive(-m_XboxController.getLeftY(), m_XboxController.getRightX());}, m_drivetrain));
-  m_arm.setDefaultCommand(moveArm(0));
-  m_XboxController.a().whileTrue(moveArm(45));
-  m_XboxController.b().whileTrue(moveArm(90));
-  m_XboxController.x().whileTrue(moveArm(135));
-  m_XboxController.y().whileTrue(turnRobot(90));
-  
+    m_drivetrain.setDefaultCommand(getArcadeDriveCommand());
+    // m_drivetrain.setDefaultCommand(new RunCommand(() -> { m_drivetrain.arcadeDrive(-m_XboxController.getLeftY(), m_XboxController.getRightX());}, m_drivetrain));
+    m_arm.setDefaultCommand(m_arm.moveArmCommand(0));
+    m_XboxController.a().whileTrue(m_arm.moveArmCommand(45));
+    m_XboxController.b().whileTrue(m_arm.moveArmCommand(90));
+    m_XboxController.x().whileTrue(m_arm.moveArmCommand(135));
+    m_XboxController.y().onTrue(m_drivetrain.turnRobotCommand(90));
   } //hi kyro
 
   private Command getArcadeDriveCommand() {
-    return new RunCommand(() -> { m_drivetrain.arcadeDrive(-m_XboxController.getLeftY(), m_XboxController.getRightX());}, m_drivetrain);
-  }
-
-  private Command moveArm(int angle) {
-    return new RunCommand(() -> m_arm.setAngle(angle), m_arm);
-  }
-
-  private Command turnRobot(int angle) {
-    return new RunCommand(() -> m_drivetrain.goToSetpoint(angle), m_drivetrain);
+    return new RunCommand(() -> { m_drivetrain.arcadeDrive(-m_XboxController.getLeftY(), -m_XboxController.getRightX());}, m_drivetrain);
   }
 
   public Command getAutonomousCommand() {

@@ -4,8 +4,12 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.xrp.XRPMotor;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.xrp.XRPGyro;
@@ -14,7 +18,7 @@ public class Drivetrain extends SubsystemBase {
   private final XRPMotor m_leftMotor;
   private final XRPMotor m_rightMotor;
   private final XRPGyro m_Gyro;
-  private final PIDController m_PIDcontroller = new PIDController(0.01, 0, 0);
+  private final PIDController m_PIDcontroller = new PIDController(0.09, 0, 0.00135);
   /** Creates a new Drivetrain. */
   public Drivetrain(final int leftPort, final int rightPort) {
     m_leftMotor = new XRPMotor(leftPort);
@@ -24,8 +28,8 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void arcadeDrive(final double fwd, final double turn) {
-    double leftSpeed = fwd + turn;
-    double rightSpeed = fwd - turn;
+    double leftSpeed = fwd - turn;
+    double rightSpeed = fwd + turn;
     m_leftMotor.set(leftSpeed);
     m_rightMotor.set(rightSpeed);
   }
@@ -42,9 +46,13 @@ public class Drivetrain extends SubsystemBase {
     return m_Gyro.getAngleX();
   }
 
-  public void goToSetpoint(int angle) {
+  private void goToSetpoint(double angle) {
     double turnSpeed = m_PIDcontroller.calculate(getAngleZ(), angle);
     arcadeDrive(0, turnSpeed);
+  }
+
+  private boolean isAtSetpoint(double angle) {
+    return MathUtil.isNear(angle, getAngleZ(), 0.5);
   }
 
 
@@ -54,5 +62,14 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("AngleX", getAngleX());
     SmartDashboard.putNumber("AngleY", getAngleY());
     SmartDashboard.putNumber("AngleZ", getAngleZ());
+  }
+
+  public Command turnRobotCommand(int angle) {
+    return new FunctionalCommand(
+      () -> {},
+      () -> goToSetpoint(angle), 
+      interrupted -> arcadeDrive(0,0),
+      () -> isAtSetpoint(angle),
+      this);
   }
 }
